@@ -46,7 +46,7 @@ public class TumblrAdapter extends android.support.v7.widget.RecyclerView.Adapte
     public void onBindViewHolder(TumblrAdapter.AdapterHolder viewHolder, int position) {
         // Get the data model based on position
 
-        final String caption = example.getResponse().getPosts().get(position).getCaption();
+       
         final String summary = example.getResponse().getPosts().get(position).getSummary();
         //getAltSizes().get(1) we get second alt size from list because first from list is not an image, its a link to blog
         final String imageUrl = example.getResponse().getPosts().get(position).getPhotos().get(0).getAltSizes().get(1).getUrl();
@@ -56,10 +56,10 @@ public class TumblrAdapter extends android.support.v7.widget.RecyclerView.Adapte
 
 
         // Set item views based on your views and data model
-        TextView textView = viewHolder.caption;
+        TextView textView = viewHolder.summary;
         final ImageView image = viewHolder.photo;
 
-        textView.setText(caption);
+        textView.setText(summary);
         Picasso.with(context).load(imageUrl).
                 fit().into(image);
 
@@ -88,13 +88,13 @@ public class TumblrAdapter extends android.support.v7.widget.RecyclerView.Adapte
 
     class AdapterHolder extends android.support.v7.widget.RecyclerView.ViewHolder {
 
-        public TextView caption;
+        public TextView summary;
         public ImageView photo;
 
         public AdapterHolder(View itemView) {
             super(itemView);
 
-            caption = (TextView)itemView.findViewById(R.id.blog_txt);
+            summary = (TextView)itemView.findViewById(R.id.blog_txt);
             photo = (ImageView)itemView.findViewById(R.id.blog_image);
         }
     }
