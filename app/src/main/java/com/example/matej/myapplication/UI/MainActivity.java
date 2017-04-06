@@ -10,7 +10,11 @@ import com.example.matej.myapplication.R;
 import com.example.matej.myapplication.adapter.EndlessRecyclerViewScrollListener;
 import com.example.matej.myapplication.adapter.TumblrAdapter;
 import com.example.matej.myapplication.models.Example;
+import com.example.matej.myapplication.models.Post;
 import com.example.matej.myapplication.models.TumblrPosts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,12 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
         linearLayoutManager = new LinearLayoutManager(this);
         recycleList.setLayoutManager(linearLayoutManager);
-        /*scrollListener = new EndlessRecyclerViewScrollListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
-            }
-        }*/
 
 
 
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                     + example.getResponse().getPosts().get(1).getPhotos().get(0).getAltSizes().get(1).getUrl());
 
         //adapter = new TumblrAdapter(example, this);
-        adapter = new TumblrAdapter(example.getResponse().getPosts().subList(0, 5), this);
+        adapter = new TumblrAdapter(example.getResponse().getPosts().subList(0, 10), this);
 
         recycleList.setAdapter(adapter);
 
@@ -126,7 +124,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadNextDataFromApi(int offset) {
-        adapter.fillPosts(example.getResponse().getPosts().subList(6, 10));
+        List<Post> newPosts = new ArrayList<>();
+        int firstItem = 0;
+        int lastItem = 5;
+        for(Post post : example.getResponse().getPosts()) {
+            newPosts.add(post);
+        }
+        adapter.fillPosts(newPosts);
         adapter.notifyDataSetChanged();
 
 

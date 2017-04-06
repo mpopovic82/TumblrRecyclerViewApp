@@ -95,16 +95,17 @@ public class TumblrAdapter extends android.support.v7.widget.RecyclerView.Adapte
 
     }
 
-    public void fillPosts(List<Post> postss) {
-        for(Post post : postss) {
-            posts.add(post);
-        }
+    public void fillPosts(List<Post> newPosts) {
+        posts.addAll(newPosts);
+//        for(Post post : newPosts) {
+//            posts.add(post);
+//        }
     }
 
     @Override
     public int getItemCount() {
         //Log.d("TumlbrAdapter", "getItemCount: " + example.getResponse().getPosts().size());
-        //Log.d("TumlbrAdapter", "post size: " + posts.size());
+        Log.d("TumlbrAdapter", "post size: " + posts.size());
         return posts.size();
     }
 
