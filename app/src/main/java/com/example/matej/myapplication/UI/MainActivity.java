@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.matej.myapplication.R;
+import com.example.matej.myapplication.adapter.EndlessRecyclerViewScrollListener;
 import com.example.matej.myapplication.adapter.TumblrAdapter;
 import com.example.matej.myapplication.models.Example;
 import com.example.matej.myapplication.models.TumblrPosts;
@@ -24,7 +25,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recycleList)
     public RecyclerView recycleList;
+
+
     public TumblrAdapter adapter;
+    private EndlessRecyclerViewScrollListener scrollListener;//
+    private LinearLayoutManager linearLayoutManager;
 
     private Example example;
 
@@ -34,7 +39,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        recycleList.setLayoutManager(new LinearLayoutManager(this));
+        linearLayoutManager = new LinearLayoutManager(this);
+        recycleList.setLayoutManager(linearLayoutManager);
+        /*scrollListener = new EndlessRecyclerViewScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+
+            }
+        }*/
+
 
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -83,9 +96,25 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity: ", "example.getResponse().getPosts().get(1).getPhotos().get(0).getAltSizes().get(1).getUrl(): "
                                     + example.getResponse().getPosts().get(1).getPhotos().get(0).getAltSizes().get(1).getUrl());
 
-        adapter = new TumblrAdapter(example, this);
+        //adapter = new TumblrAdapter(example, this);
+        adapter = new TumblrAdapter(example.getResponse().getPosts().subList(0, 5), this);
 
         recycleList.setAdapter(adapter);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Log.d("MainActivity", "thread: " + Thread.currentThread().getName());
+                Log.d("MainActivity", "page: " + page);
+                Log.d("MainActivity", "totalItemsCount: " + totalItemsCount);
+
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recycleList.addOnScrollListener(scrollListener);
     }
 
     public Example getExample() {
@@ -95,4 +124,17 @@ public class MainActivity extends AppCompatActivity {
     public void setExample(Example example) {
         this.example = example;
     }
+
+    public void loadNextDataFromApi(int offset) {
+        adapter.fillPosts(example.getResponse().getPosts().subList(6, 10));
+        adapter.notifyDataSetChanged();
+
+
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+    }
+
 }

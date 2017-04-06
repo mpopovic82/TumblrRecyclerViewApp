@@ -16,8 +16,8 @@ public class TumblrDetailActivity extends AppCompatActivity {
 
     private String name;
     private String summary;
-    private String imageUrl;
     private String date;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
